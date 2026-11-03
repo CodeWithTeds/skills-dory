@@ -12,13 +12,13 @@ Install directly using `npx skills add` (identical to the `heygen-com/hyperframe
 
 ```bash
 # Full GitHub URL
-npx skills add https://github.com/<YOUR_GITHUB_USERNAME>/dory --skill dory
+npx skills add https://github.com/CodeWithTeds/dory --skill dory
 
 # Or shorthand
-npx skills add <YOUR_GITHUB_USERNAME>/dory --skill dory
+npx skills add CodeWithTeds/dory --skill dory
 ```
 
-*(Once you push this repository to GitHub under your account, the command above will immediately download, validate, and wire DORY into any connected coding assistant).*
+*(This command will automatically download, validate, and wire DORY into any connected coding assistant).*
 
 ### Test Local Installation
 You can test the installation locally right now on your machine without publishing:
