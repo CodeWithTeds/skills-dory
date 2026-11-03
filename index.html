@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The DORY Technique – Autonomous Iterative Coding System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface-subtle: #f3f4f6;
+      --border: #e5e7eb;
+      --border-dark: #d1d5db;
+      --accent: #eb4e27;
+      --accent-hover: #d43d18;
+      --accent-subtle: #fff1ee;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --text-subtle: #9ca3af;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --radius: 6px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: radial-gradient(#d9dce1 1px, transparent 1px);
+      background-size: 22px 22px;
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      padding: 40px 24px 100px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Top Grid Header */
+    .hero-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 36px;
+      margin-bottom: 48px;
+    }
+
+    @media (max-width: 860px) {
+      .hero-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+
+    /* Left Sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mascot-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      margin-bottom: 24px;
+    }
+
+    .mascot-img {
+      max-width: 100%;
+      height: 220px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.06));
+      transition: transform 0.25s ease;
+    }
+
+    .mascot-img:hover {
+      transform: scale(1.03) rotate(-2deg);
+    }
+
+    .sidebar-section {
+      margin-bottom: 20px;
+    }
+
+    .meta-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .meta-value {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .toggle-group {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .toggle-btn {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .toggle-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    /* Right Main Header */
+    .main-header {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-meta-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meta-breadcrumbs {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-verified {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .title-group h1 {
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      line-height: 1.1;
+    }
+
+    .title-group p {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 24px;
+      max-width: 840px;
+    }
+
+    /* Active Blueprint Callout */
+    .blueprint-callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .blueprint-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+      box-shadow: 0 0 0 3px rgba(235, 78, 39, 0.2);
+    }
+
+    .blueprint-callout h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .blueprint-callout p {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 960px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .kpi-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+
+    .kpi-sub {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Section Separator */
+    .section-divider {
+      border-top: 1px dashed var(--border-dark);
+      margin: 48px 0;
+    }
+
+    /* Taxonomy & Format Selection */
+    .taxonomy-section {
+      margin-bottom: 32px;
+    }
+
+    .taxonomy-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+
+    .taxonomy-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .tab-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: var(--surface-subtle);
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .tab-item {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .tab-item:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .tab-item.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 1px 2px rgba(235, 78, 39, 0.2);
+    }
+
+    /* Diagram Section Cards */
+    .schematic-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 36px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      transition: border-color 0.2s;
+    }
+
+    .schematic-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .schematic-type-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+
+    .schematic-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 4px;
+    }
+
+    .schematic-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 4px;
+      color: var(--text-muted);
+    }
+
+    .mermaid-container {
+      overflow-x: auto;
+      padding: 16px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Side by side comparison (Schematic 1) */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .comparison-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      background: #fafafa;
+    }
+
+    .comparison-panel.trap {
+      border-top: 4px solid #ef4444;
+    }
+
+    .comparison-panel.cooker {
+      border-top: 4px solid #10b981;
+      background: #f7fee7;
+    }
+
+    .panel-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    .panel-tag.trap-tag { color: #dc2626; }
+    .panel-tag.cooker-tag { color: #059669; }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .panel-step {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .panel-step-label {
+      font-weight: 600;
+      color: var(--text-main);
+      display: block;
+    }
+
+    .panel-step-desc {
+      color: var(--text-muted);
+    }
+
+    /* Interactive Simulation Replay */
+    .terminal-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 36px;
+    }
+
+    .attempt-nav {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .attempt-tab {
+      flex: 1;
+      text-align: left;
+      padding: 12px 16px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .attempt-tab:hover {
+      background: #ebeef2;
+    }
+
+    .attempt-tab.active {
+      background: var(--surface);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .attempt-tab-title {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .attempt-tab-status {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status-fail { color: #dc2626; }
+    .status-warn { color: #d97706; }
+    .status-pass { color: #059669; }
+
+    .terminal-box {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: var(--radius);
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.6;
+      overflow-x: auto;
+      border: 1px solid #1e293b;
+      margin-bottom: 20px;
+    }
+
+    .t-prompt { color: #38bdf8; }
+    .t-agent { color: #a855f7; }
+    .t-fail { color: #f87171; font-weight: 700; }
+    .t-pass { color: #4ade80; font-weight: 700; }
+    .t-warn { color: #fbbf24; }
+    .t-dim { color: #64748b; }
+
+    /* Diagnostic Box */
+    .diagnosis-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #3b82f6;
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    .diagnosis-title {
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+    }
+
+    /* Heuristics Cards Grid */
+    .heuristics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 960px) {
+      .heuristics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .heuristic-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .heuristic-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .heuristic-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+
+    .heuristic-desc {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .heuristic-fix-box {
+      background: var(--surface-subtle);
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .heuristic-fix-title {
+      font-weight: 700;
+      color: var(--text-main);
+      font-size: 11px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    /* Quick Install Bar */
+    .install-bar {
+      background: #111827;
+      color: #ffffff;
+      border-radius: var(--radius);
+      padding: 24px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 48px;
+    }
+
+    .install-info h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .install-info p {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    .install-code-box {
+      display: flex;
+      align-items: center;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      gap: 16px;
+    }
+
+    .install-cmd {
+      color: #38bdf8;
+      user-select: all;
+    }
+
+    .copy-btn {
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background 0.15s;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Live Pipeline indicator */
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Top Layout: Mascot Sidebar + Main Header -->
+    <div class="hero-layout">
+      
+      <!-- Left Sidebar -->
+      <aside class="sidebar">
+        <div class="mascot-card">
+          <img src="./dory.png" alt="DORY Mascot" class="mascot-img" id="mascot">
+        </div>
+
+        <div class="sidebar-section">
+          <div class="meta-tag">The Loop Concept</div>
+          <div class="meta-value">Ralph Wiggum / DORY Primitive</div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="meta-tag">Study Format</div>
+          <div class="toggle-group">
+            <button class="toggle-btn" onclick="toggleFormat('text', this)">Text</button>
+            <button class="toggle-btn active" onclick="toggleFormat('visual', this)">Visual</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Main Content -->
+      <main class="main-header">
+        <div class="top-meta-bar">
+          <div class="meta-breadcrumbs">
+            <span>Learn with DORY</span>
+            <span>·</span>
+            <span>Full Master Study</span>
+            <span>·</span>
+            <span>Est. Reading: 14 mins</span>
+            <span>·</span>
+            <span class="badge-verified">Production Verified</span>
+          </div>
+          <div class="toggle-group">
+            <button class="toggle-btn" onclick="toggleFormat('text', this)">Full Text Study</button>
+            <button class="toggle-btn active" onclick="toggleFormat('visual', this)">Visual & Diagrams <span style="font-size:9px; background:#fff; color:var(--accent); padding:1px 4px; border-radius:3px; margin-left:4px;">Detailed</span></button>
+          </div>
+        </div>
+
+        <div class="title-group">
+          <h1>The DORY Technique</h1>
+          <p>Deterministic Test Gates, Context Degradation Elimination, and Self-Healing AFK Engineering</p>
+        </div>
+
+        <div class="blueprint-callout">
+          <div class="blueprint-header">
+            <span class="status-dot"></span>
+            <span>Visual Blueprint Active</span>
+          </div>
+          <h3>High-density systems architecture schematics. Pure engineering topology with minimal prose.</h3>
+          <p>Explore the 6 detailed technical diagrams below covering Cold-Start isolation, the Tri-Gate verification barrier, the 4-layer Citadel, and senior triage heuristics.</p>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Context Retention</div>
+            <div class="kpi-value">100% Cold Starts</div>
+            <div class="kpi-sub">0 Token Bleed</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Evaluation</div>
+            <div class="kpi-value">Binary Gates</div>
+            <div class="kpi-sub">Pint & PHPStan / Multi-gate</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Human Workload</div>
+            <div class="kpi-value">AFK Coding</div>
+            <div class="kpi-sub">Zero Babysitting</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Safety Bounds</div>
+            <div class="kpi-value">Circuit Breakers</div>
+            <div class="kpi-sub">Locked Sandboxes</div>
+          </div>
+        </div>
+      </main>
+
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Taxonomy Bar -->
+    <section class="taxonomy-section">
+      <div class="taxonomy-meta">Diagramming Architecture · Formal Types Taxonomy</div>
+      <h2 class="taxonomy-title">Choose Visual Schematic Format</h2>
+      <div class="tab-bar">
+        <button class="tab-item active" onclick="filterSchematic('all', this)">All Schematics</button>
+        <button class="tab-item" onclick="filterSchematic('flowchart', this)">1. Flowcharts</button>
+        <button class="tab-item" onclick="filterSchematic('sequence', this)">2. UML Sequence</button>
+        <button class="tab-item" onclick="filterSchematic('venn', this)">3. Venn Diagram</button>
+        <button class="tab-item" onclick="filterSchematic('dfd', this)">4. Data Flow (DFD)</button>
+        <button class="tab-item" onclick="filterSchematic('block', this)">5. Block Diagram</button>
+        <button class="tab-item" onclick="filterSchematic('spider', this)">6. Spider Mind Map</button>
+      </div>
+    </section>
+
+    <!-- Schematic 01: Flowcharts -->
+    <div class="schematic-card" data-category="flowchart">
+      <div class="schematic-header">
+        <div>
+          <div class="schematic-type-tag">Type 01 · Flowchart · Process Workflows</div>
+          <div class="schematic-title">Context Collapse vs. Cold-Start Pressure Cooker</div>
+        </div>
+        <div class="live-indicator"><span class="status-dot"></span> Live Pipeline</div>
+      </div>
+      
+      <div class="mermaid-container">
+        <pre class="mermaid">
+flowchart LR
+    subgraph ChatTrap["✕ Conversational Chat Trap (Linear Token Bleed)"]
+        direction TB
+        P1["Step 1: Prompt (~2.5k tokens)"] --> E1["Step 2: Unverified Edit (~12k tokens)"]
+        E1 --> W1["Step 3: Whack-a-Mole Patching (~38k tokens)"]
+        W1 --> C1["Final Result: Context Collapse (80k+ Lost)"]
+    end
+
+    subgraph Cooker["✓ DORY Cold-Start Pressure Cooker (Verified Cycles)"]
+        direction TB
+        S1["Cycle 01: task-spec Contract (0 Chat Tokens)"] --> G1["Tri-Gate Verification (Exit 1 to disk XML)"]
+        G1 --> S2["Cycle 02: Fresh Agent (Reads disk diff + log)"]
+        S2 --> G2["Tri-Gate Verification (Exit 0)"]
+        G2 --> OK["100% Green · Zero Bleed Commit"]
+    end
+        </pre>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="comparison-panel trap">
+          <div class="panel-tag trap-tag">✕ Conversational Chat Trap</div>
+          <div class="panel-title">Linear Horizontal Degradation</div>
+          <div class="panel-step">
+            <span class="panel-step-label">Step 01 · Vague Prompt</span>
+            <span class="panel-step-desc">"Build Customer Auth" injected into chat window (~2,500 tokens).</span>
+          </div>
+          <div class="panel-step">
+            <span class="panel-step-label">Step 02 · Unverified Edit</span>
+            <span class="panel-step-desc">SQL error thrown. 5k error stack dumped into chat context (~12,000 tokens).</span>
+          </div>
+          <div class="panel-step">
+            <span class="panel-step-label">Step 03 · Sycophantic Drift</span>
+            <span class="panel-step-desc">Agent apologizes, patches query, silently corrupts DB schema (~38,000 tokens).</span>
+          </div>
+          <div class="panel-step" style="border:none;">
+            <span class="panel-step-label" style="color:#dc2626;">Final: Context Collapse (80k+ Tokens Lost)</span>
+          </div>
+        </div>
+
+        <div class="comparison-panel cooker">
+          <div class="panel-tag cooker-tag">✓ DORY Cold-Start Pressure Cooker</div>
+          <div class="panel-title">Deterministic Recovery Cycles</div>
+          <div class="panel-step">
+            <span class="panel-step-label">Cycle 01 · Contract Ingestion</span>
+            <span class="panel-step-desc">task-spec.json contract. Isolated subshell terminated right after edit (0 Chat Tokens).</span>
+          </div>
+          <div class="panel-step">
+            <span class="panel-step-label">Tri-Gate Gatekeeper</span>
+            <span class="panel-step-desc">Pint + PHPStan + Tests. Exit code 1 saved directly to disk telemetry XML.</span>
+          </div>
+          <div class="panel-step">
+            <span class="panel-step-label">Cycle 02 · Fresh Cold-Start Agent</span>
+            <span class="panel-step-desc">Reads disk diff + JUnit telemetry. Patches root cause cleanly with tabula rasa memory.</span>
+          </div>
+          <div class="panel-step" style="border:none;">
+            <span class="panel-step-label" style="color:#059669;">Final: 100% Green Convergence (Exit 0)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schematic 02: UML Sequence -->
+    <div class="schematic-card" data-category="sequence">
+      <div class="schematic-header">
+        <div>
+          <div class="schematic-type-tag">Type 02 · UML Sequence Diagram · System Interaction</div>
+          <div class="schematic-title">Cold-Start Process Lifecycle & Gatekeeper Sequence</div>
+        </div>
+        <div class="schematic-badge">UML 2.5 Standard</div>
+      </div>
+      
+      <div class="mermaid-container">
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant Orch as Loop Orchestrator
+    participant Worker as Cold-Start Subshell
+    participant Disk as Workspace Disk
+    participant Gate as Tri-Gate Barrier
+    participant Git as Git Repository
+
+    Orch->>Worker: Spawn fresh worker (Time-box 180s)
+    Worker->>Disk: Apply minimal targeted mutations
+    Orch->>Worker: Terminate process (0 Memory Leakage)
+    Orch->>Gate: Run Gate A (Style / Pint)
+    Orch->>Gate: Run Gate B (Types / PHPStan L8)
+    Orch->>Gate: Run Gate C (Runtime / Feature Tests)
+    alt Exit Code 1
+        Gate-->>Disk: Persist telemetry (junit.xml, error.log)
+        Orch->>Worker: Spawn Cycle 02 fresh agent with disk diff
+    else Exit Code 0 (100% Green)
+        Gate-->>Orch: Convergence Certified
+        Orch->>Git: git commit -m "feat: verified" && git push
+    end
+        </pre>
+      </div>
+    </div>
+
+    <!-- Schematic 03: Venn Diagram -->
+    <div class="schematic-card" data-category="venn">
+      <div class="schematic-header">
+        <div>
+          <div class="schematic-type-tag">Type 03 · Venn Diagram · Criteria Overlap</div>
+          <div class="schematic-title">The Tri-Gate Convergence Architecture</div>
+        </div>
+        <div class="schematic-badge">3-Way Gate Overlap</div>
+      </div>
+      
+      <div class="mermaid-container">
+        <pre class="mermaid">
+flowchart TD
+    subgraph TriGate["The Tri-Gate Convergence Barrier"]
+        direction TB
+        GateA["CIRCLE A · CODE STYLE (PINT)<br/>• Enforces PSR-12 code style<br/>• Line lengths, format standardization<br/>• Unused import cleanup"]
+        GateB["CIRCLE B · STATIC TYPING (PHPSTAN L8)<br/>• Strict static type guarantees<br/>• Non-null guarantees<br/>• Verified parameter contracts"]
+        GateC["CIRCLE C · RUNTIME TESTS (PEST / ARTISAN)<br/>• 100% green assertions<br/>• Real database state verification<br/>• Zero regression baseline"]
+
+        GateA --> Convergence{"Central Intersection"}
+        GateB --> Convergence
+        GateC --> Convergence
+
+        Convergence --> Cert["CENTRAL INTERSECTION<br/>Zero Hallucination · Production Verified · Exit 0"]
+    end
+        </pre>
+      </div>
+    </div>
+
+    <!-- Schematic 04: Data Flow Diagram -->
+    <div class="schematic-card" data-category="dfd">
+      <div class="schematic-header">
+        <div>
+          <div class="schematic-type-tag">Type 04 · Data Flow Diagram (DFD) · Artifact Transforms</div>
+          <div class="schematic-title">How Information Flows: Spec → Disk → Telemetry</div>
+        </div>
+        <div class="schematic-badge">Level 1 DFD</div>
+      </div>
+      
+      <div class="mermaid-container">
+        <pre class="mermaid">
+flowchart LR
+    Spec[("task-spec.json<br/>Contract Specification")] -->|1. Ingest Scope| Worker["Cold-Start Worker<br/>(Isolated Subshell)"]
+    Worker -->|2. Direct Mutation| Disk[("Workspace Disk<br/>(Git Working Tree)")]
+    Disk -->|3. Trigger Verification| Gates["Tri-Gate Engine<br/>(Pint / PHPStan / Pest)"]
+    Gates -->|4a. Exit != 0 Telemetry| Telemetry[("Disk Telemetry<br/>junit.xml / errors.log")]
+    Telemetry -->|5. Multi-Attempt Diff| Worker
+    Gates -->|4b. Exit == 0| Commit["Production Git Commit<br/>(100% Green Tree)"]
+        </pre>
+      </div>
+    </div>
+
+    <!-- Schematic 05: Block Diagram -->
+    <div class="schematic-card" data-category="block">
+      <div class="schematic-header">
+        <div>
+          <div class="schematic-type-tag">Type 05 · Block Diagram · High-Level System Blocks</div>
+          <div class="schematic-title">The 4-Layer Citadel Architecture</div>
+        </div>
+        <div class="schematic-badge">4 Core Subsystems</div>
+      </div>
+      
+      <div class="mermaid-container">
+        <pre class="mermaid">
+flowchart TB
+    subgraph Citadel["The Citadel Framework"]
+        direction TB
+        subgraph B1["BLOCK 01 · SPECIFICATION (Contract Engine)"]
+            b1a["• task-spec.json contract"]
+            b1b["• Whitelist file paths only"]
+            b1c["• Explicit error status codes"]
+            b1d["• Zero conversational noise"]
+        end
+        subgraph B2["BLOCK 02 · ORCHESTRATION (Cold-Start Worker)"]
+            b2a["• Isolated OS subshell"]
+            b2b["• 180s hard execution timer"]
+            b2c["• Process termination after mutation"]
+            b2d["• 0 token memory leakage"]
+        end
+        subgraph B3["BLOCK 03 · VERIFICATION (Tri-Gate Gatekeepers)"]
+            b3a["• Pint style checker"]
+            b3b["• PHPStan Level 8 static types"]
+            b3c["• Pest feature test suite"]
+            b3d["• Objective binary exit codes"]
+        end
+        subgraph B4["BLOCK 04 · CITADEL (Blast Radius Sentinel)"]
+            b4a["• Disposable agent/* branch"]
+            b4b["• Air-gapped network socket"]
+            b4c["• Read-only secret vault"]
+            b4d["• Circuit breaker killswitch"]
+        end
+        B1 --> B2 --> B3 --> B4
+    end
+        </pre>
+      </div>
+    </div>
+
+    <!-- Schematic 06: Spider Mind Map -->
+    <div class="schematic-card" data-category="spider">
+      <div class="schematic-header">
+        <div>
+          <div class="schematic-type-tag">Type 06 · Spider Diagram (Mind Map) · Untangling Complexity</div>
+          <div class="schematic-title">The DORY Autonomous Mind Map</div>
+        </div>
+        <div class="schematic-badge">Conceptual Web</div>
+      </div>
+      
+      <div class="mermaid-container">
+        <pre class="mermaid">
+flowchart TD
+    Root["DORY Autonomous Engine"]
+
+    Root --> M1["Context Retention"]
+    M1 --> M1A["Tabula Rasa Isolation"]
+    M1 --> M1B["0 Token Bleed"]
+    M1 --> M1C["Disk as Single Source of Truth"]
+
+    Root --> M2["Tri-Gate Verification"]
+    M2 --> M2A["Gate A: Pint / PSR-12 Style"]
+    M2 --> M2B["Gate B: PHPStan Level 8 Types"]
+    M2 --> M2C["Gate C: Pest / Artisan Tests"]
+
+    Root --> M3["Citadel Sentinel"]
+    M3 --> M3A["Disposable agent/* Branches"]
+    M3 --> M3B["180s Hard Execution Boundaries"]
+    M3 --> M3C["Circuit Breakers ($1.50 / Max Iterations)"]
+
+    Root --> M4["Senior Triage"]
+    M4 --> M4A["Anti-Ping-Pong Multi-Diff Memory"]
+    M4 --> M4B["Frozen Time & Seeded DB Isolation"]
+    M4 --> M4C["True TDD Pre-Flight Contracts"]
+        </pre>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Simulation Replay -->
+    <section class="terminal-section">
+      <div class="taxonomy-meta">Simulation Replay · Pressure Cooker in Action</div>
+      <h2 class="taxonomy-title">Live Contextual Pressure Cooker Trace</h2>
+
+      <div class="attempt-nav">
+        <div class="attempt-tab active" onclick="switchAttempt(1, this)">
+          <div class="attempt-tab-title">1. Attempt 01</div>
+          <div class="attempt-tab-status status-fail">FAIL (SQL Null)</div>
+        </div>
+        <div class="attempt-tab" onclick="switchAttempt(2, this)">
+          <div class="attempt-tab-title">2. Attempt 02</div>
+          <div class="attempt-tab-status status-warn">WARN (Missing Trait)</div>
+        </div>
+        <div class="attempt-tab" onclick="switchAttempt(3, this)">
+          <div class="attempt-tab-title">3. Attempt 03</div>
+          <div class="attempt-tab-status status-pass">PASS (100% Green)</div>
+        </div>
+      </div>
+
+      <div class="terminal-box" id="terminal-content">
+        <div><span class="t-prompt">$</span> [INFO] Attempt 1/10 initiated with prompt spec: auth-task.json</div>
+        <div><span class="t-agent">[AGENT]</span> Generated: app/Http/Controllers/Api/CustomerAuthController.php</div>
+        <div><span class="t-prompt">$</span> [TEST] Running: php artisan test --filter=CustomerAuthTest</div>
+        <br>
+        <div>• Tests\Feature\CustomerAuthTest > customer_can_authenticate ................. <span class="t-fail">FAIL</span> (0.12s)</div>
+        <div class="t-dim">  ---</div>
+        <div>  Failed asserting that 500 matches expected 200.</div>
+        <div>  Exception: Illuminate\Database\QueryException</div>
+        <div>  SQLSTATE[23000]: Integrity constraint violation: Column 'email' cannot be null</div>
+        <div class="t-dim">  ---</div>
+        <div>• Tests\Feature\CustomerAuthTest > customer_receives_sanctum_token .......... <span class="t-fail">FAIL</span> (0.04s)</div>
+        <br>
+        <div><span class="t-prompt">$</span> [STATIC-ANALYSIS] vendor/bin/phpstan analyse</div>
+        <div>  Line 18: Method CustomerAuthController::login() has parameter $request with no typehint specified.</div>
+        <div>  Line 24: Access to undefined property $request->email.</div>
+        <br>
+        <div><span class="t-fail">[RESULT] 2 FAILED, 0 PASSED (Exit code: 1). Working tree dirty. Iteration aborted.</span></div>
+      </div>
+
+      <div class="diagnosis-box" id="diagnosis-content">
+        <div class="diagnosis-title">Diagnosis: Context Poisoning Avoided</div>
+        <p>No human intervened. The failure was caught immediately by the deterministic test suite and compiler. The dirty code remains on disk for the next fresh agent to inspect.<br>
+        <strong>Automated Next Action:</strong> Create dedicated FormRequest (<code>LoginCustomerRequest</code>) and typehint dependencies.</p>
+      </div>
+    </section>
+
+    <!-- Senior Heuristics -->
+    <section>
+      <div class="taxonomy-meta">Senior Heuristics · Triage Tree</div>
+      <h2 class="taxonomy-title">Senior Loop Failure Modes & Diagnostic Resolutions</h2>
+
+      <div class="heuristics-grid">
+        <div class="heuristic-card">
+          <div class="heuristic-tag">Antipattern 01</div>
+          <div class="heuristic-name">Ping-Pong Thrash</div>
+          <div class="heuristic-desc">Agent alternates cyclically between Approach A and Approach B, breaking tests alternately in a loop.</div>
+          <div class="heuristic-fix-box">
+            <div class="heuristic-fix-title">The Fix</div>
+            Inject git diff of last 2 failed attempts into failure report so agent explicitly sees past dead-ends.
+          </div>
+        </div>
+
+        <div class="heuristic-card">
+          <div class="heuristic-tag">Antipattern 02</div>
+          <div class="heuristic-name">Flaky Test Poisoning</div>
+          <div class="heuristic-desc">Tests pass or fail intermittently across iterations due to unmocked system clocks or unseeded database ordering.</div>
+          <div class="heuristic-fix-box">
+            <div class="heuristic-fix-title">The Fix</div>
+            Freeze time with <code>Carbon::setTestNow()</code>, seed random number generators, and isolate in-memory DB transactions.
+          </div>
+        </div>
+
+        <div class="heuristic-card">
+          <div class="heuristic-tag">Antipattern 03</div>
+          <div class="heuristic-name">Specification Vacuum</div>
+          <div class="heuristic-desc">Vague prompts pass shallow assertions but violate actual business contracts and client API schemas.</div>
+          <div class="heuristic-fix-box">
+            <div class="heuristic-fix-title">The Fix</div>
+            Pre-write failing Pest tests & JSON contracts before launching the implementation loop (True TDD).
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Install Bar -->
+    <div class="install-bar">
+      <div class="install-info">
+        <h3>Install DORY via skills.sh</h3>
+        <p>Compatible with Claude Code, Cursor, Codex, Antigravity, and all open agent harnesses.</p>
+      </div>
+      <div class="install-code-box">
+        <span class="install-cmd" id="installCmd">npx skills add https://github.com/CodeWithTeds/dory --skill dory</span>
+        <button class="copy-btn" onclick="copyInstall()">Copy</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      themeVariables: {
+        fontFamily: "'JetBrains Mono', monospace",
+        fontSize: '12px',
+        primaryColor: '#ffffff',
+        primaryTextColor: '#111827',
+        primaryBorderColor: '#d1d5db',
+        lineColor: '#6b7280',
+        secondaryColor: '#f9fafb',
+        tertiaryColor: '#f3f4f6'
+      }
+    });
+
+    function filterSchematic(type, btn) {
+      document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.schematic-card');
+      cards.forEach(card => {
+        if (type === 'all' || card.getAttribute('data-category') === type) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    const attemptsData = {
+      1: {
+        terminal: `<div><span class="t-prompt">$</span> [INFO] Attempt 1/10 initiated with prompt spec: auth-task.json</div>
+<div><span class="t-agent">[AGENT]</span> Generated: app/Http/Controllers/Api/CustomerAuthController.php</div>
+<div><span class="t-prompt">$</span> [TEST] Running: php artisan test --filter=CustomerAuthTest</div>
+<br>
+<div>• Tests\\Feature\\CustomerAuthTest > customer_can_authenticate ................. <span class="t-fail">FAIL</span> (0.12s)</div>
+<div class="t-dim">  ---</div>
+<div>  Failed asserting that 500 matches expected 200.</div>
+<div>  Exception: Illuminate\\Database\\QueryException</div>
+<div>  SQLSTATE[23000]: Integrity constraint violation: Column 'email' cannot be null</div>
+<div class="t-dim">  ---</div>
+<div>• Tests\\Feature\\CustomerAuthTest > customer_receives_sanctum_token .......... <span class="t-fail">FAIL</span> (0.04s)</div>
+<br>
+<div><span class="t-prompt">$</span> [STATIC-ANALYSIS] vendor/bin/phpstan analyse</div>
+<div>  Line 18: Method CustomerAuthController::login() has parameter $request with no typehint specified.</div>
+<div>  Line 24: Access to undefined property $request->email.</div>
+<br>
+<div><span class="t-fail">[RESULT] 2 FAILED, 0 PASSED (Exit code: 1). Working tree dirty. Iteration aborted.</span></div>`,
+        diagnosis: `<div class="diagnosis-title">Diagnosis: Context Poisoning Avoided</div>
+<p>No human intervened. The failure was caught immediately by the deterministic test suite and compiler. The dirty code remains on disk for the next fresh agent to inspect.<br>
+<strong>Automated Next Action:</strong> Create dedicated FormRequest (<code>LoginCustomerRequest</code>) and typehint dependencies.</p>`
+      },
+      2: {
+        terminal: `<div><span class="t-prompt">$</span> [INFO] Attempt 2/10 initiated (Tabula Rasa Cold-Start)</div>
+<div><span class="t-agent">[AGENT]</span> Generated: app/Http/Requests/LoginCustomerRequest.php</div>
+<div><span class="t-agent">[AGENT]</span> Patched: app/Http/Controllers/Api/CustomerAuthController.php</div>
+<div><span class="t-prompt">$</span> [STATIC-ANALYSIS] vendor/bin/phpstan analyse</div>
+<div>  [OK] No errors found. (PHPStan Level 8)</div>
+<br>
+<div><span class="t-prompt">$</span> [TEST] Running: php artisan test --filter=CustomerAuthTest</div>
+<div>• Tests\\Feature\\CustomerAuthTest > customer_can_authenticate ................. <span class="t-pass">PASS</span> (0.08s)</div>
+<div>• Tests\\Feature\\CustomerAuthTest > customer_receives_sanctum_token .......... <span class="t-warn">WARN</span> (0.05s)</div>
+<div class="t-dim">  ---</div>
+<div>  Call to undefined method App\\Models\\Customer::createToken()</div>
+<div class="t-dim">  ---</div>
+<br>
+<div><span class="t-warn">[RESULT] 1 PASSED, 1 WARNING (Exit code: 1). Sanctum HasApiTokens trait missing on Customer model.</span></div>`,
+        diagnosis: `<div class="diagnosis-title">Diagnosis: Missing Sanctum Trait</div>
+<p>Static typing passed. The SQL constraint was resolved cleanly via FormRequest. Second feature test caught missing API token trait on model.<br>
+<strong>Automated Next Action:</strong> Import and use <code>Laravel\\Sanctum\\HasApiTokens</code> in <code>Customer</code> model.</p>`
+      },
+      3: {
+        terminal: `<div><span class="t-prompt">$</span> [INFO] Attempt 3/10 initiated (Tabula Rasa Cold-Start)</div>
+<div><span class="t-agent">[AGENT]</span> Added HasApiTokens to app/Models/Customer.php</div>
+<div><span class="t-prompt">$</span> [LINT] vendor/bin/pint --test</div>
+<div>  PASS   12 files linted, 0 issues found. (PSR-12 Certified)</div>
+<br>
+<div><span class="t-prompt">$</span> [STATIC-ANALYSIS] vendor/bin/phpstan analyse --level=8</div>
+<div>  [OK] No errors found. Non-null guarantees verified.</div>
+<br>
+<div><span class="t-prompt">$</span> [TEST] Running: php artisan test --filter=CustomerAuthTest</div>
+<div>• Tests\\Feature\\CustomerAuthTest > customer_can_authenticate ................. <span class="t-pass">PASS</span> (0.06s)</div>
+<div>• Tests\\Feature\\CustomerAuthTest > customer_receives_sanctum_token .......... <span class="t-pass">PASS</span> (0.04s)</div>
+<div>• Tests\\Feature\\CustomerAuthTest > invalid_credentials_returns_422 ......... <span class="t-pass">PASS</span> (0.03s)</div>
+<br>
+<div><span class="t-pass">[RESULT] 3 PASSED, 0 FAILED (Exit code: 0). 100% Green Convergence! All 3 gates passed.</span></div>
+<div><span class="t-prompt">$</span> git commit -m "feat: complete customer authentication with FormRequest and Sanctum tokens"</div>`,
+        diagnosis: `<div class="diagnosis-title">Convergence Certified: Exit Code 0</div>
+<p>All three binary gates (Pint, PHPStan Level 8, Pest feature test suite) passed with exit code 0.<br>
+<strong>Outcome:</strong> Production verified. Zero hallucination. Git commit pushed cleanly with 0 conversational token bleed.</p>`
+      }
+    };
+
+    function switchAttempt(attemptNum, tabElement) {
+      document.querySelectorAll('.attempt-tab').forEach(t => t.classList.remove('active'));
+      tabElement.classList.add('active');
+
+      const data = attemptsData[attemptNum];
+      if (data) {
+        document.getElementById('terminal-content').innerHTML = data.terminal;
+        document.getElementById('diagnosis-content').innerHTML = data.diagnosis;
+      }
+    }
+
+    function toggleFormat(type, btn) {
+      document.querySelectorAll('.toggle-btn').forEach(b => {
+        if (b.innerText.toLowerCase().includes(type)) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+      if (type === 'text') {
+        window.location.href = './context.md';
+      }
+    }
+
+    function copyInstall() {
+      const text = document.getElementById('installCmd').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = 'Copy', 2000);
+      });
+    }
+  </script>
+</body>
+</html>
