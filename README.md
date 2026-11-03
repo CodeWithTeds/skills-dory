@@ -6,9 +6,31 @@ DORY is an autonomous, persistent, and self-healing AI coding agent skill inspir
 
 ---
 
+## ⚡ Quick Install (skills.sh)
+
+Install directly using `npx skills add` (identical to the `heygen-com/hyperframes` package model):
+
+```bash
+# Full GitHub URL
+npx skills add https://github.com/<YOUR_GITHUB_USERNAME>/dory --skill dory
+
+# Or shorthand
+npx skills add <YOUR_GITHUB_USERNAME>/dory --skill dory
+```
+
+*(Once you push this repository to GitHub under your account, the command above will immediately download, validate, and wire DORY into any connected coding assistant).*
+
+### Test Local Installation
+You can test the installation locally right now on your machine without publishing:
+```bash
+npx skills add /Applications/dory --skill dory
+```
+
+---
+
 ## 🚀 The D-O-R-Y Loop
 
-- **D – DO:** Contract ingestion, target file whitelisting, and **True TDD** (writing failing contract tests before modifying production code).
+- **D – DO:** Contract specification, file whitelisting, and **True TDD** (writing failing contract tests before modifying production code).
 - **O – OBSERVE:** Verification through the objective **Tri-Gate Gateway**:
   - **Gate A:** Code Style & Linting (`pint`, `eslint`, `ruff`)
   - **Gate B:** Static Analysis & Strict Typing (`phpstan`, `tsc --noEmit`, `mypy`)
@@ -18,36 +40,29 @@ DORY is an autonomous, persistent, and self-healing AI coding agent skill inspir
 
 ---
 
-## 📦 Installation
+## 📂 Repository Layout
 
-### Option 1: Via `skills.sh`
-Once published to GitHub:
-```bash
-npx skills add <GITHUB_REPOSITORY_URL> --skill dory
-```
-
-### Option 2: Local Agent Skills / Antigravity
-Clone or copy into your workspace's `.agents/skills/` directory:
-```bash
-mkdir -p .agents/skills/dory
-cp /path/to/dory/dory/SKILL.md .agents/skills/dory/SKILL.md
-```
-
-### Option 3: Global User Plugin (Antigravity / Gemini CLI)
-Install to global plugins:
-```bash
-mkdir -p ~/.gemini/config/plugins/dory/skills/dory
-cp dory/SKILL.md ~/.gemini/config/plugins/dory/skills/dory/SKILL.md
-cp plugin.json ~/.gemini/config/plugins/dory/plugin.json
+```text
+dory/
+├── skills/
+│   └── dory/
+│       └── SKILL.md       # Primary Agent Skills entrypoint
+├── dory/
+│   └── SKILL.md           # Mirror entrypoint for legacy resolvers
+├── skills.sh.json         # skills.sh discovery manifest
+├── plugin.json            # Open agent plugin manifest
+├── package.json           # npm & package manager metadata
+├── context.md             # Systems architecture & Mermaid schematics
+├── skills.md              # Original master prompt specification
+└── README.md
 ```
 
 ---
 
 ## 🎮 Usage & Activation
 
-Invoke DORY by telling any compatible coding agent:
-- *"Use DORY to implement this feature"*
-- `"/dory fix the failing auth tests"`
-- *"Keep coding until all tests are green (AFK mode)"*
-
-DORY will autonomously work through the Tri-Gate verification barrier until the task reaches **Exit Code 0** or trips its safety circuit breaker.
+Once installed, invoke DORY by saying to any coding agent (Claude Code, Cursor, Codex, Antigravity):
+- *"Use DORY to fix this bug"*
+- *"`/dory` implement customer authentication"*
+- *"Just keep coding until all tests pass (AFK mode)"*
+- *"Run in DORY mode with max_iterations=5"*
