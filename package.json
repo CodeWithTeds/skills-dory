@@ -1,0 +1,22 @@
+{
+  "name": "dory-skill",
+  "version": "1.0.0",
+  "description": "DORY – Autonomous Iterative Coding Agent Skill (Ralph Wiggum Cold-Start Pressure Cooker Edition)",
+  "keywords": [
+    "agent-skills",
+    "skills",
+    "ai-agent",
+    "dory",
+    "ralph-wiggum",
+    "autonomous-coding",
+    "tri-gate",
+    "tdd"
+  ],
+  "license": "MIT",
+  "main": "dory/SKILL.md",
+  "files": [
+    "dory/SKILL.md",
+    "skills/dory/SKILL.md",
+    "plugin.json"
+  ]
+}

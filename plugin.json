@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "dory",
+  "version": "1.0.0",
+  "description": "Autonomous, iterative AI coding skill implementing the Ralph Wiggum Cold-Start Pressure Cooker loop. Persistently implements, verifies via Tri-Gate, self-corrects using senior triage heuristics, and yields production-verified code."
+}
